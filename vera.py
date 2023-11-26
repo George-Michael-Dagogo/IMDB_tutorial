@@ -100,6 +100,6 @@ brand_df = pd.DataFrame({
 })
 
 
-brand_df
+print(brand_df)
 
 
