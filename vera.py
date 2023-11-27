@@ -9,9 +9,7 @@ url = 'https://www.macys.com/shop/featured/women-handbags'
 ua = UserAgent()
 userAgent = ua.random
 headers = {'User-Agent': userAgent}
-s = requests.Session()
-s.headers.update(headers)
-page = s.get(url)
+page = requests.get(url, headers = headers)
 soup = BeautifulSoup(page.content, "html.parser")
 sales_box = soup.find_all('div', class_= "productDescription")
 brands = []
@@ -68,13 +66,11 @@ def image_link_get(new_url):
     ua = UserAgent()
     userAgent = ua.random
     headers = {'User-Agent': userAgent}
-    s = requests.Session()
-    s.headers.update(headers)
-    page = s.get('https://www.macys.com'+ new_url)
+    page = requests.get('https://www.macys.com'+ new_url, headers = headers)
     new_soup = BeautifulSoup(page.content, "html.parser")
     image_box = new_soup.find_all('div', class_= "image-grid-container")
     
-    print(new_url)
+    
 
     for box in image_box:
         #brands
@@ -90,6 +86,8 @@ def image_link_get(new_url):
 with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
     executor.map(image_link_get,product_urls)
 
+
+
 brand_df = pd.DataFrame({
     'brand':brands,
     'price':prices,
@@ -100,6 +98,6 @@ brand_df = pd.DataFrame({
 })
 
 
-print(brand_df)
+brand_df
 
 
