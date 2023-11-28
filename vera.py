@@ -18,7 +18,7 @@ discounts = []
 ratings = []
 product_urls = []
 image_urls = []
-
+product_names = []
 for box in sales_box:
     #brands
     if box.find('div', class_ = "productBrand") is not None:
@@ -57,6 +57,15 @@ for box in sales_box:
     else:
         product_urls.append('None')
 
+    if box.find('a', attrs={"title": True}) is not None:
+        product_name = box.find('a', attrs={"title": True})   #.replace('\n\t\t','').replace('\n','').strip()
+        product_name = product_name['title']
+        product_names.append(product_name)
+    else:
+        product_names.append('None')        
+
+
+
 
 def image_link_get(new_url):
     import requests
@@ -68,7 +77,8 @@ def image_link_get(new_url):
     headers = {'User-Agent': userAgent}
     page = requests.get('https://www.macys.com'+ new_url, headers = headers)
     new_soup = BeautifulSoup(page.content, "html.parser")
-    image_box = new_soup.find_all('div', class_= "image-grid-container")
+    image_box = new_soup.find('picture', class_= "main-picture")
+    print(new_url)
     
     
 
@@ -90,6 +100,7 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
 
 brand_df = pd.DataFrame({
     'brand':brands,
+    'product':product_names,
     'price':prices,
     'discount/on_sale':discounts,
     'rating':ratings,
