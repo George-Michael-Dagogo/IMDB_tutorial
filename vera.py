@@ -5,7 +5,7 @@ import concurrent.futures
 import pandas as pd
 
 #url = 'https://www.macys.com/shop/featured/women-handbags'
-url = [f'https://www.macys.com/shop/featured/women-handbags/Pageindex/{i:d}' for i in (range(1,15,1))]
+url = [f'https://www.macys.com/shop/featured/women-handbags/Pageindex/{i:d}' for i in (range(1,3,1))]
 
 brands = []
 prices = []
@@ -32,6 +32,15 @@ def scrape_pages(url):
         else:
             brands.append('None')
 
+          #product_name
+        if box.find('a', attrs={"title": True}) is not None:
+            product_name = box.find('a', attrs={"title": True})   #.replace('\n\t\t','').replace('\n','').strip()
+            product_name = product_name['title']
+            product_names.append(product_name)
+        else:
+            product_names.append('None')        
+
+
         #price
         if box.find('span', class_ = "regular originalOrRegularPriceOnSale") is not None:
             price = box.find('span', class_ = "regular originalOrRegularPriceOnSale").text.replace('\n\t\t','').replace('\n','').strip()
@@ -45,6 +54,9 @@ def scrape_pages(url):
         #discounts
         if box.find('span', class_ = "discount") is not None:
             discount = box.find('span', class_ = "discount").text.replace('\n\t\t','').replace('\n','').strip()
+            discounts.append(discount)
+        elif box.find('span',attrs={'data-auto': 'final-price'}) is not None:
+            discount = box.find('span', attrs={'data-auto': 'final-price'}).text.replace('\n\t\t','').replace('\n','').strip()
             discounts.append(discount)
         else:
             discounts.append('None')
@@ -65,14 +77,7 @@ def scrape_pages(url):
         else:
             product_urls.append('None')
 
-        #product_name
-        if box.find('a', attrs={"title": True}) is not None:
-            product_name = box.find('a', attrs={"title": True})   #.replace('\n\t\t','').replace('\n','').strip()
-            product_name = product_name['title']
-            product_names.append(product_name)
-        else:
-            product_names.append('None')        
-
+    
     image_box = soup.find_all('picture')  
 
     for box in image_box:
