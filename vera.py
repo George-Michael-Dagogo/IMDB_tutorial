@@ -100,6 +100,7 @@ def scrape_pages(url):
 with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
     executor.map(scrape_pages,url)
 
+##fjfjdjd
 
 
 brand_df = pd.DataFrame({
