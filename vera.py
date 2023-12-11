@@ -22,7 +22,7 @@ def scrape_pages(url):
     page = requests.get(url, headers = headers)
     soup = BeautifulSoup(page.content, "html.parser")
     print(url)
-    sales_box = soup.find_all('div', class_= "productDescription")
+    sales_box = soup.find_all('li', class_= "cell productThumbnailItem")
 
     for box in sales_box:
         #brands
@@ -78,10 +78,7 @@ def scrape_pages(url):
             product_urls.append('None')
 
     
-    image_box = soup.find_all('picture')  
-
-    for box in image_box:
-        #brands
+     
         if  box.find('source',attrs={"data-lazysrcset": True}) is not None:
             image_url = box.find('source',attrs={"data-lazysrcset": True})
             image_url = image_url['data-lazysrcset']
@@ -100,7 +97,7 @@ def scrape_pages(url):
 with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
     executor.map(scrape_pages,url)
 
-##fjfjdjd
+
 
 
 brand_df = pd.DataFrame({
@@ -114,6 +111,6 @@ brand_df = pd.DataFrame({
 })
 
 
-brand_df
+print(brand_df)
 
 
