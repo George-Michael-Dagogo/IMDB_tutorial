@@ -14,6 +14,7 @@ ratings = []
 product_urls = []
 image_urls = []
 product_names = []
+product_description = []
 
 def scrape_pages(url):
     ua = UserAgent()
@@ -68,15 +69,6 @@ def scrape_pages(url):
             ratings.append(rating)
         else:
             ratings.append('None')
-
-        #product_url
-        if box.find('a', attrs={"href": True}) is not None:
-            product_url = box.find('a', attrs={"href": True})   #.replace('\n\t\t','').replace('\n','').strip()
-            product_url = product_url['href']
-            product_urls.append(product_url)
-        else:
-            product_urls.append('None')
-
     
      
         if  box.find('source',attrs={"data-lazysrcset": True}) is not None:
@@ -90,13 +82,37 @@ def scrape_pages(url):
         else:
             image_urls.append('None')
 
-    
+                #product_url
+        if box.find('a', attrs={"href": True}) is not None:
+            product_url = box.find('a', attrs={"href": True})   #.replace('\n\t\t','').replace('\n','').strip()
+            product_url = product_url['href']
+            product_urls.append(product_url)
+        else:
+            product_urls.append('None')
+
 
 
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
     executor.map(scrape_pages,url)
 
+def details_get(urls):
+    ua = UserAgent()
+    userAgent = ua.random
+    headers = {'User-Agent': userAgent}
+    link = 'https://www.macys.com'+ urls
+    print(link)
+    new_page = requests.get(link, headers = headers)
+    new_soup = BeautifulSoup(new_page.content, "html.parser")
+    if new_soup.find('div', class_= "details-content") is not None:
+        details = new_soup.find('div', class_= "details-content").text.replace('\n','...').strip()
+        product_description.append(details)
+    else:
+        product_description.append('None') 
+
+for i in product_urls:
+    print(i)
+    details_get(i)
 
 
 
@@ -107,10 +123,11 @@ brand_df = pd.DataFrame({
     'discount/on_sale':discounts,
     'rating':ratings,
     'product_urls': product_urls,
-    'image_url':image_urls
+    'image_url':image_urls,
+    'product_details':product_description
 })
 
 
-print(brand_df)
+brand_df
 
 
