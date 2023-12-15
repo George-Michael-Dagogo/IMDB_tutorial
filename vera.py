@@ -128,6 +128,7 @@ brand_df = pd.DataFrame({
 })
 
 
-brand_df
+print(brand_df)
 
+brand_df.to_csv('brand.csv')
 
