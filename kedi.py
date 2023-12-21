@@ -13,8 +13,7 @@ def get_coincap_data(coin_symbol):
         data = response.json()
         
         # Extract relevant information
-        coin_data = data['data']
-        
+        coin_data = data['data']   
         # Print or return the data
         print(f"Name: {coin_data['name']}")
         print(f"Symbol: {coin_data['symbol']}")
