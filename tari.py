@@ -151,4 +151,10 @@ def restaurants():
 
     df.to_csv(f'./Tari_csv/Restaurants/restaurants.csv', index=False)
 
-restaurants()
+
+if __name__ == "__main__":
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        # Submit the functions to the executor
+        futures = [executor.submit(restaurants),
+                   executor.submit(hotels),
+                   executor.submit(attractions)]
